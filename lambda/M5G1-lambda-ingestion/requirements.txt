@@ -1,0 +1,4 @@
+kaggle
+boto3
+pandas
+tempfile
