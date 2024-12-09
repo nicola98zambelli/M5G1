@@ -3,16 +3,17 @@ import pandas as pd
 import tempfile
 from kaggle.api.kaggle_api_extended import KaggleApi
 
+# Utility class for downloading datasets from Kaggle
 class KaggleDownloader:
     def __init__(self, competition_name, ):
         self.competition_name = competition_name
-        # Inizializza e autentica l'API di Kaggle
         self.api = KaggleApi()
         self.api.authenticate()
 
     def load_data_as_dataframe(self, file_name):
         """
         Load a file from Kaggle directly into a pandas DataFrame using a temporary file.
+        Temporary files are automatically cleaned up.
 
         :param file_name: Name of the file to load (e.g., 'train.csv').
         :return: A pandas DataFrame containing the file data.
