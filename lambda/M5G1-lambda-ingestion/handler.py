@@ -1,45 +1,83 @@
 import json
-import pandas as pd
-from services.s3 import S3
 import os
+import logging
+from typing import Dict, Any, Optional
+
+import pandas as pd
 from sklearn.model_selection import train_test_split
-# to import kaggle we need to configure credentials dir first
-os.environ["KAGGLE_CONFIG_DIR"] = "./.config/kaggle"
+
+# Ensure Kaggle config directory exists before importing
+KAGGLE_CONFIG_DIR = "./config/kaggle"
+os.environ["KAGGLE_CONFIG_DIR"] = KAGGLE_CONFIG_DIR
+from services.s3 import S3
 from services.kaggle import KaggleDownloader
 
-# Lambda function signature designed to run locally as well
-def main(event, context):
-    # init
-    bucket_name ='data-remote-repository-cefriel'
-    output_key_path = "gruppo-1/"
-    train_file_name = 'train.csv'
-    validation_file_name = 'validation.csv'
-    test_file_name = 'test.csv'
-    kaggle_competition = "house-prices-advanced-regression-techniques"
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO, 
+    format='%(asctime)s - %(levelname)s: %(message)s'
+)
+logger = logging.getLogger(__name__)
 
-    # Kaggle data download
-    downloader = KaggleDownloader(competition_name=kaggle_competition )
-    df_train_kg = downloader.load_data_as_dataframe(file_name='train.csv')
+def load_config() -> Dict[str, str]:
+    """Load configuration from environment variables with defaults."""
+    return {
+        'bucket_name': os.getenv('S3_BUCKET', 'data-remote-repository-cefriel'),
+        'output_key_path': os.getenv('S3_OUTPUT_PATH', 'gruppo-1/'),
+        'kaggle_competition': os.getenv('KAGGLE_COMPETITION', 'house-prices-advanced-regression-techniques'),
+        'kaggle_config_dir': KAGGLE_CONFIG_DIR
+    }
 
-    print(df_train_kg.head(5))
-    print(df_train_kg.shape)
-    # data splitting 80/20
-    train_df, valid_df = train_test_split(df_train_kg, test_size=0.2, random_state=42)
-    print(train_df.shape)
-    print(valid_df.shape)
+def main(event: Optional[Dict] = None, context: Any = None, debug: bool = False) -> Dict[str, Any]:
+    """
+    Main Lambda handler for downloading and processing Kaggle dataset.
+    
+    :param event: AWS Lambda event
+    :param context: AWS Lambda context
+    :param debug: Enable debug logging
+    :return: Lambda response dictionary
+    """
+    if debug:
+        logger.setLevel(logging.DEBUG)
 
-    test_df = downloader.load_data_as_dataframe(file_name='test.csv')
-    print(test_df.shape)
+    try:
+        config = load_config()
+        os.environ["KAGGLE_CONFIG_DIR"] = config['kaggle_config_dir']
 
-    # S3 upload
-    S3.upload_csv(bucket_name, output_key_path + train_file_name, train_df)
-    S3.upload_csv(bucket_name, output_key_path + validation_file_name, valid_df)
-    S3.upload_csv(bucket_name, output_key_path + test_file_name, test_df)
+        downloader = KaggleDownloader(competition_name=config['kaggle_competition'])
+        
+        df_train_kg = downloader.load_data_as_dataframe('train.csv')
+        logger.debug(f"Training data shape: {df_train_kg.shape}")
 
-    return None
+        train_df, valid_df = train_test_split(df_train_kg, test_size=0.2, random_state=42)
+        test_df = downloader.load_data_as_dataframe('test.csv')
 
-# if you wanna run locally
+        # Upload to S3
+        file_names = {
+            'train': 'train.csv', 
+            'validation': 'validation.csv', 
+            'test': 'test.csv'
+        }
+        
+        for key, df in [('train', train_df), ('validation', valid_df), ('test', test_df)]:
+            S3.upload_csv(
+                config['bucket_name'], 
+                f"{config['output_key_path']}{file_names[key]}", 
+                df
+            )
+
+        logger.info("Data processing completed successfully")
+        return {
+            'statusCode': 200,
+            'body': json.dumps('Data processing completed')
+        }
+
+    except Exception as e:
+        logger.exception(f"Data processing failed: {e}")
+        return {
+            'statusCode': 500,
+            'body': json.dumps(f'Error: {str(e)}')
+        }
+
 if __name__ == "__main__":
-    main(event=None, context=None)
-
-
+    main(debug=True)
