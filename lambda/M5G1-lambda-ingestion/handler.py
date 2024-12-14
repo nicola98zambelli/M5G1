@@ -4,7 +4,6 @@ import logging
 from typing import Dict, Any, Optional
 
 import pandas as pd
-from sklearn.model_selection import train_test_split
 
 # Ensure Kaggle config directory exists before importing
 KAGGLE_CONFIG_DIR = "./config/kaggle"
@@ -49,7 +48,13 @@ def main(event: Optional[Dict] = None, context: Any = None, debug: bool = False)
         df_train_kg = downloader.load_data_as_dataframe('train.csv')
         logger.debug(f"Training data shape: {df_train_kg.shape}")
 
-        train_df, valid_df = train_test_split(df_train_kg, test_size=0.2, random_state=42)
+        # to avoid sklearn library we do the same thing in pandas
+        #train_df, valid_df = train_test_split(df_train_kg, test_size=0.2, random_state=42)
+        test_size = 0.2
+        random_state = 42
+        test_len = int(len(df_train_kg) * test_size)
+        valid_df = df_train_kg.sample(n=test_len, random_state=random_state)
+        train_df = df_train_kg.drop(valid_df.index)   
         test_df = downloader.load_data_as_dataframe('test.csv')
 
         # Upload to S3
