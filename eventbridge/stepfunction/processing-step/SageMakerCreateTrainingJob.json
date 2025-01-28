@@ -1,0 +1,16 @@
+{
+    "AppSpecification": {
+      "ImageUri": "314146336986.dkr.ecr.us-east-1.amazonaws.com/gruppo1:<nome del job>"
+    },
+    "ProcessingResources": {
+      "ClusterConfig": {
+        "InstanceCount": 1,
+        "InstanceType": "ml.t3.medium",
+        "VolumeSizeInGB": 5
+      }
+    },
+    "RoleArn": "<ruolo>",
+    "StoppingCondition": {
+      "MaxRuntimeInSeconds": 10800
+    }
+  }
