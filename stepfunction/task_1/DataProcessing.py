@@ -1,6 +1,7 @@
 import pandas as pd
 import boto3
 from io import StringIO
+import os
 
 
 def main():
@@ -18,12 +19,13 @@ def main():
     #bucket_name = os.environ.get("BUCKET")                   #'data-remote-repository-cefriel'
     bucket_name = 'data-remote-repository-cefriel'
     
-    #train_file = os.environ.get("RAW_TRAIN_PATH")                     #'gruppo-1/raw/train.csv'
-    train_file = 'gruppo-1/train.csv'
-    #validation_file = os.environ.get("RAW_VAL_PATH")                  #'gruppo-1/raw/validation.csv'
-    validation_file = 'gruppo-1/validation.csv'
-    #test_file = os.environ.get("RAW_TEST_PATH")                       #'gruppo-1/raw/test.csv'
-    test_file = 'gruppo-1/test.csv'
+    # Add to the code of the step function this env variables
+    train_file = os.environ.get("RAW_TRAIN_PATH")                     #'gruppo-1/raw/train.csv'
+    #train_file = 'gruppo-1/train.csv'
+    validation_file = os.environ.get("RAW_VAL_PATH")                  #'gruppo-1/raw/validation.csv'
+    #validation_file = 'gruppo-1/validation.csv'
+    test_file = os.environ.get("RAW_TEST_PATH")                       #'gruppo-1/raw/test.csv'
+    #test_file = 'gruppo-1/test.csv'
     #train data
     obj = s3.Object(bucket_name, train_file)
     data = obj.get()['Body'].read()
