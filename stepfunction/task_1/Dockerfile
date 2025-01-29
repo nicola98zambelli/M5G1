@@ -11,4 +11,4 @@ RUN pip install -r requirements.txt
 COPY DataProcessing.py ./
 
 # Set the command to run the script
-CMD ["python", "DataProcessing.py"]
+CMD ["DataProcessing.main"]
