@@ -15,9 +15,9 @@ def main():
     ]
     
     s3 = boto3.resource('s3')
-    
-    #bucket_name = os.environ.get("BUCKET")                   #'data-remote-repository-cefriel'
-    bucket_name = 'data-remote-repository-cefriel'
+    print("leggo le variabili d'ambiente")
+    bucket_name = os.environ.get("BUCKET")                   #'data-remote-repository-cefriel'
+    #bucket_name = 'data-remote-repository-cefriel'
     
     # Add to the code of the step function this env variables
     train_file = os.environ.get("RAW_TRAIN_PATH")                     #'gruppo-1/raw/train.csv'
@@ -78,6 +78,4 @@ def main():
 
     return output
 
-
-if __name__ == "__main__":
-    main()
+main()
