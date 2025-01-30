@@ -22,7 +22,7 @@ def load_config() -> Dict[str, str]:
     """Load configuration from environment variables with defaults."""
     return {
         'bucket_name': os.getenv('S3_BUCKET', 'data-remote-repository-cefriel'),
-        'output_key_path': os.getenv('S3_OUTPUT_PATH', 'gruppo-1/'),
+        'output_key_path': os.getenv('S3_OUTPUT_PATH', 'gruppo-1/raw/'),
         'kaggle_competition': os.getenv('KAGGLE_COMPETITION', 'house-prices-advanced-regression-techniques'),
         'kaggle_config_dir': KAGGLE_CONFIG_DIR
     }

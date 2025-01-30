@@ -15,9 +15,9 @@
   },
   "Environment": {
     "BUCKET": "data-remote-repository-cefriel",
-    "RAW_TRAIN_PATH": "gruppo-1/train.csv",
-    "RAW_VAL_PATH": "gruppo-1/validation.csv",
-    "RAW_TEST_PATH": "gruppo-1/test.csv"
+    "RAW_TRAIN_PATH": "gruppo-1/raw/train.csv",
+    "RAW_VAL_PATH": "gruppo-1/raw/validation.csv",
+    "RAW_TEST_PATH": "gruppo-1/raw/test.csv"
   },
   "ProcessingJobName": "DataProcessingJob-prova11"
 }
