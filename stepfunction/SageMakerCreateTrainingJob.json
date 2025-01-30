@@ -6,7 +6,7 @@
     "ClusterConfig": {
       "InstanceCount": 1,
       "InstanceType": "ml.t3.medium",
-      "VolumeSizeInGB": 5
+      "VolumeSizeInGB": 10
     }
   },
   "RoleArn": "arn:aws:iam::314146336986:role/M5-G1-role-SageMakerJobs",
@@ -18,5 +18,6 @@
     "RAW_TRAIN_PATH": "gruppo-1/train.csv",
     "RAW_VAL_PATH": "gruppo-1/validation.csv",
     "RAW_TEST_PATH": "gruppo-1/test.csv"
-  }
+  },
+  "ProcessingJobName": "M5-G1-DataProcessing"
 }

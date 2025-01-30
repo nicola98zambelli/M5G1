@@ -19,6 +19,9 @@ def main():
     bucket_name = os.environ.get("BUCKET")                   #'data-remote-repository-cefriel'
     #bucket_name = 'data-remote-repository-cefriel'
     
+    bucket_name = os.environ.get("BUCKET")                   #'data-remote-repository-cefriel'
+    #bucket_name = 'data-remote-repository-cefriel'
+    
     # Add to the code of the step function this env variables
     train_file = os.environ.get("RAW_TRAIN_PATH")                     #'gruppo-1/train.csv'
     #train_file = 'gruppo-1/train.csv'
