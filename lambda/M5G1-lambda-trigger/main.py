@@ -8,7 +8,7 @@ from botocore.exceptions import ClientError
 class StepFunctionTrigger:
     def __init__(self, 
                  region_name: str = 'us-east-1', 
-                 state_machine_arn: str = "arn:aws:states:us-east-1:314146336986:stateMachine:M5G1-sftest"):
+                 state_machine_arn: str = "arn:aws:states:us-east-1:314146336986:stateMachine:M5-G1-sfjobswaterfall"):
         """
         Initialize Step Functions client and configuration.
         
