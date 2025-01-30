@@ -13,9 +13,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         
-      - name: Debug AWS Credentials
-        run: aws sts get-caller-identity
-        
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
