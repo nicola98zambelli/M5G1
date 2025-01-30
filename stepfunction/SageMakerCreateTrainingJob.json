@@ -19,5 +19,5 @@
     "RAW_VAL_PATH": "gruppo-1/validation.csv",
     "RAW_TEST_PATH": "gruppo-1/test.csv"
   },
-  "ProcessingJobName": "M5-G1-DataProcessing"
+  "ProcessingJobName": "DataProcessingJob-prova11"
 }
