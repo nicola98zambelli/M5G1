@@ -1,6 +1,6 @@
 {
   "AppSpecification": {
-    "ImageUri": "314146336986.dkr.ecr.us-east-1.amazonaws.com/gruppo1:M5-G1-DataProcessing"
+    "ImageUri": "314146336986.dkr.ecr.us-east-1.amazonaws.com/gruppo1:M5G1-DataProcessing"
   },
   "ProcessingResources": {
     "ClusterConfig": {
@@ -19,5 +19,5 @@
     "RAW_VAL_PATH": "gruppo-1/raw/validation.csv",
     "RAW_TEST_PATH": "gruppo-1/raw/test.csv"
   },
-  "ProcessingJobName": "DataProcessingJob-prova11"
+  "ProcessingJobName.$": "$.exec_uuid"
 }
