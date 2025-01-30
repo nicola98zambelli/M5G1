@@ -33,7 +33,7 @@ jobs:
           for dir in lambda/*; do
             if [ -d "$dir" ]; then
               LAMBDA_NAME=$(basename "$dir")
-              IMAGE_TAG="${ECR_REGISTRY}/${LAMBDA_NAME}:latest"
+              IMAGE_TAG="${ECR_REGISTRY}:${LAMBDA_NAME}"
 
               echo "Building and pushing $LAMBDA_NAME..."
               docker build -t $IMAGE_TAG $dir
