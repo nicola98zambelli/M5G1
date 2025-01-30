@@ -1,4 +1,3 @@
-#FROM public.ecr.aws/lambda/python:3.12
 FROM python:3.12-slim
 # Upgrade pip
 RUN pip install --upgrade pip
