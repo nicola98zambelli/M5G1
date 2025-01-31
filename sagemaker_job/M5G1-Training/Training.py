@@ -6,7 +6,7 @@ import boto3
 
 def training():
     # Specifica la regione per SageMaker e S3
-    region = os.environ.get("AWS_REGION", "us-west-2")  # Puoi cambiare 'us-west-2' con la regione che desideri
+    region = os.environ.get("AWS_REGION", "us-west-1")  # Puoi cambiare 'us-west-2' con la regione che desideri
 
     sm_boto3 = boto3.client("sagemaker", region_name=region)  # Aggiungi la regione
     s3_client = boto3.client("s3", region_name=region)  # Aggiungi la regione
