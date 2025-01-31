@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'lambda/**'  # Esegui solo se vengono modificati file dentro "lambda"
+      
 permissions:
       id-token: write   # This is required for requesting the JWT
       contents: read  
