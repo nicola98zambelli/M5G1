@@ -30,13 +30,16 @@ jobs:
           ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}
           
           # Definiamo le cartelle delle Lambda
+          ECR_REPOSITORY="gruppo1"  # Nome della repo in ECR
+          
           for dir in lambda/*; do
             if [ -d "$dir" ]; then
               LAMBDA_NAME=$(basename "$dir")
-              IMAGE_TAG="${ECR_REGISTRY}:${LAMBDA_NAME}"
-
+              IMAGE_TAG="${ECR_REGISTRY}/${ECR_REPOSITORY}:${LAMBDA_NAME}"
+          
               echo "Building and pushing $LAMBDA_NAME..."
               docker build -t $IMAGE_TAG $dir
               docker push $IMAGE_TAG
             fi
           done
+
