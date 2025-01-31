@@ -5,7 +5,12 @@ import json
 import boto3
 
 def training():
-    sm_boto3 = boto3.client("sagemaker")
+    # Specifica la regione per SageMaker e S3
+    region = os.environ.get("AWS_REGION", "us-west-2")  # Puoi cambiare 'us-west-2' con la regione che desideri
+
+    sm_boto3 = boto3.client("sagemaker", region_name=region)  # Aggiungi la regione
+    s3_client = boto3.client("s3", region_name=region)  # Aggiungi la regione
+
     if os.environ.get("MODEL_BUCKET_URI") is None:
         print("Using default model bucket")
     s3_bucket = os.environ.get("MODEL_BUCKET_URI") if os.environ.get("MODEL_BUCKET_URI") else "s3://model-remote-repository-cefriel"
@@ -31,9 +36,9 @@ def training():
             "n_estimators": n_estimators,     #100
             "random_state": 0,
         },
-        use_spot_instances = True,
-        max_wait = 7200,
-        max_run = 3600,
+        use_spot_instances=True,
+        max_wait=7200,
+        max_run=3600,
         output_path=f"{s3_bucket}/{s3_prefix}",
     )
     
@@ -45,10 +50,10 @@ def training():
     outputs = {"MODEL_URI":artifact, "MODEL_SCRIPT": script}
     print(outputs)
     json_data = json.dumps(outputs)
-    # Initialize S3 client
-    s3_client = boto3.client("s3")
+    
     output_bucket = os.environ.get("DATA_URI") if os.environ.get("DATA_URI") else "data-remote-repository-cefriel"
     output_path = os.environ.get("DATA_URI") if os.environ.get("DATA_URI") else "gruppo-1/outputs/model_artifacts"+ script[:-3] +".json"
+    
     s3_client.put_object(
         Bucket=output_bucket,       
         Key=output_path,      
@@ -56,5 +61,4 @@ def training():
         ContentType="application/json"  # Set correct content type
     )
 
-if __name__ == "__main__":
-    training()
+training()
