@@ -6,6 +6,7 @@ This project implements a machine learning pipeline in AWS that automates data i
 
 All Lambda functions are containerized with their images stored in ECR, so that Kaggle tokens and credentials are securely stored. SageMaker runs containerized data processing and training scripts.
 All Docker images are built and pushed to ECR using provided ```publish.bat``` scripts.
+We also implemented GitHub Actions to automate build and deployment of Lambda images and SageMaker jobs to ECR. Actions are triggered enytime we merge an update of the Lambda / jobs scripts from ```dev``` to the ```main``` branch.
 
 Finally, here's the architecture technical overview:
 ![M5-G1-architecture-draft (1)](https://github.com/user-attachments/assets/8ac0759a-5231-4ce9-99fc-c2c29bc6fcbb)
