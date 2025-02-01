@@ -1,0 +1,22 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "",
+  "Resources": {
+    "Rule047d2aa3": {
+      "Type": "AWS::Events::Rule",
+      "Properties": {
+        "Name": "M5-G1-EB-Ingestion-shedule",
+        "ScheduleExpression": "cron(0 7 * * ? *)",
+        "State": "ENABLED",
+        "EventBusName": "default",
+        "Targets": [{
+          "Id": "Id964881f9-a6c8-4430-9aa8-eabd915083b7",
+          "Arn": {
+            "Fn::Sub": "arn:${AWS::Partition}:lambda:${AWS::Region}:${AWS::AccountId}:function:M5G1-lambda-ingestion"
+          }
+        }]
+      }
+    }
+  },
+  "Parameters": {}
+}

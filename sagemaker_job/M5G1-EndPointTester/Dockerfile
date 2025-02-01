@@ -7,4 +7,4 @@ RUN pip install -r requirements.txt
 # Copy the script into the container
 COPY . ./
 # Set the command to run the script
-CMD ["python", "EndpointCreation.py"]
+CMD ["python", "EndpointTest.py"]

@@ -10,3 +10,5 @@ We also implemented **GitHub Actions** to automate build and deployment of Lambd
 
 Finally, here's the architecture technical overview:
 ![M5-G1-architecture-draft (1)](https://github.com/user-attachments/assets/8ac0759a-5231-4ce9-99fc-c2c29bc6fcbb)
+
+

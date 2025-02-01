@@ -1,0 +1,23 @@
+{
+  "AppSpecification": {
+    "ImageUri": "314146336986.dkr.ecr.us-east-1.amazonaws.com/gruppo1:M5G1-DataProcessing"
+  },
+  "ProcessingResources": {
+    "ClusterConfig": {
+      "InstanceCount": 1,
+      "InstanceType": "ml.t3.medium",
+      "VolumeSizeInGB": 10
+    }
+  },
+  "RoleArn": "arn:aws:iam::314146336986:role/M5-G1-role-SageMakerJobs",
+  "StoppingCondition": {
+    "MaxRuntimeInSeconds": 10800
+  },
+  "Environment": {
+    "BUCKET": "data-remote-repository-cefriel",
+    "RAW_TRAIN_PATH": "gruppo-1/raw/train.csv",
+    "RAW_VAL_PATH": "gruppo-1/raw/validation.csv",
+    "RAW_TEST_PATH": "gruppo-1/raw/test.csv"
+  },
+  "ProcessingJobName.$": "$.exec_uuid"
+}

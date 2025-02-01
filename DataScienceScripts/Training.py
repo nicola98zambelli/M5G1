@@ -5,7 +5,6 @@ import json
 import boto3
 
 def training():
-    boto3.setup_default_session(region_name="us-east-1")  # Cambia con la tua regione
     sm_boto3 = boto3.client("sagemaker")
     if os.environ.get("MODEL_BUCKET_URI") is None:
         print("Using default model bucket")
