@@ -15,32 +15,36 @@ import pandas as pd
 
 # inference functions ---------------
 
-# def input_fn(request_body, request_content_type):
-#     print(request_body)
-#     print(request_content_type)
-#     if request_content_type == "text/csv":
-#         request_body = request_body.strip()
-#         try:
-#             df = pd.read_csv(StringIO(request_body), header=None)
-#             return df
-        
-#         except Exception as e:
-#             print(e)
-#     else:
-#         return """Please use Content-Type = 'text/csv' and, send the request!!""" 
+def input_fn(request_body, request_content_type):
+    print("request:", request_body)
+    print("request content type:", request_content_type)
+    if request_content_type == "text/csv":
+        request_body = request_body.strip()
+        try:
+            df = pd.read_csv(StringIO(request_body))
+            print("df.shape = ", df.shape)
+            return df
+      
+        except Exception as e:
+            print(e)
+    else:
+        return """Please use Content-Type = 'text/csv' and, send the request!!""" 
  
     
 def model_fn(model_dir):
     clf = joblib.load(os.path.join(model_dir, "model.joblib"))
     return clf
 
-# def predict_fn(input_data, model):
-#     if type(input_data) != str:
-#         prediction = model.predict(input_data)
-#         print(prediction)
-#         return prediction
-#     else:
-#         return input_data
+def predict_fn(input_data, model):
+    print("data type:", input_data)
+    if type(input_data) != str:
+        print("in prediction")
+        print("input shape: ", input_data.shape)
+        prediction = model.predict(input_data)
+        print("prediction shape", prediction.shape)
+        return prediction
+    else:
+        return input_data
         
     
 if __name__ == "__main__":
@@ -55,11 +59,11 @@ if __name__ == "__main__":
     # Data, model, and output directories
     parser.add_argument("--model-dir", type=str, default=os.environ.get("SM_MODEL_DIR"))
     parser.add_argument("--bucket", type=str, default='data-remote-repository-cefriel')
-    parser.add_argument("--train-file", type=str, default="gruppo-1/raw/train.csv")
-    parser.add_argument("--validation-file", type=str, default="gruppo-1/raw/validation.csv")
+    parser.add_argument("--train-file", type=str, default="gruppo-1/processed/train.csv")
+    parser.add_argument("--validation-file", type=str, default="gruppo-1/processed/validation.csv")
     
     args, _ = parser.parse_known_args()
-
+    
     print(os.environ.get("SM_MODEL_DIR"))
     print("SKLearn Version: ", sklearn.__version__)
     print("Joblib Version: ", joblib.__version__)
@@ -72,25 +76,23 @@ if __name__ == "__main__":
     train_file = args.train_file
     validation_file = args.validation_file
     bucket_name = args.bucket
+    print("DATA SOURCE: ", train_file)
     #train data
     obj = s3.Object(bucket_name, train_file)
     data = obj.get()['Body'].read()
     data_string = data.decode('utf-8')
     data_file = StringIO(data_string)
-    train_df = pd.read_csv(data_file, sep=";")
+    train_df = pd.read_csv(data_file)
     
     #validation data
     obj = s3.Object(bucket_name, validation_file)
     data = obj.get()['Body'].read()
     data_string = data.decode('utf-8')
     data_file = StringIO(data_string)
-    validation_df = pd.read_csv(data_file, sep=";")
+    validation_df = pd.read_csv(data_file)
 
-    # fillna with mean
-    train_df['MasVnrArea'] = train_df['MasVnrArea'].fillna(train_df['MasVnrArea'].mean())
-    train_df['GarageYrBlt'] = train_df['GarageYrBlt'].fillna(train_df['GarageYrBlt'].mean())
-    validation_df['MasVnrArea'] = validation_df['MasVnrArea'].fillna(validation_df['MasVnrArea'].mean())
-    validation_df['GarageYrBlt'] = validation_df['GarageYrBlt'].fillna(validation_df['GarageYrBlt'].mean())
+    print("train shape: ", train_df.shape)
+    print("validation shape: ", validation_df.shape)
     
     features = [
     'MSSubClass', 'LotArea', 'OverallQual', 'OverallCond', 'YearBuilt', 
@@ -102,14 +104,14 @@ if __name__ == "__main__":
     ]
     
     label = "SalePrice"
-    
+
     print("Building training and testing datasets")
     print()
     X_train = train_df[features]
     X_validation = validation_df[features]
     y_train = train_df[label]
     y_validation = validation_df[label]
-
+    
     print('Column order: ')
     print(features)
     print()
@@ -149,7 +151,8 @@ if __name__ == "__main__":
     print()
     print("---- METRICS RESULTS FOR TESTING DATA ----")
     print()
-    print("Total Rows are: ", X_validation.shape[0])
+    print("Validation shape is: ", X_validation.shape)
+    print("Validation output shape is:", y_pred_val.shape)
     print('[TESTING] Model MSE is: ', test_acc)
     #print('[TESTING] Testing Report: ')
     #print(test_rep)

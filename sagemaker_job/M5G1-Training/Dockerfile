@@ -7,4 +7,4 @@ RUN pip install -r requirements.txt
 # Copy the script into the container
 COPY . ./
 # Set the command to run the script
-CMD ["python", "DataProcessing.py"]
+CMD ["python", "Training.py"]

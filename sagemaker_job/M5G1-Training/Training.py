@@ -5,6 +5,7 @@ import json
 import boto3
 
 def training():
+    boto3.setup_default_session(region_name="us-east-1")  # Cambia con la tua regione
     sm_boto3 = boto3.client("sagemaker")
     if os.environ.get("MODEL_BUCKET_URI") is None:
         print("Using default model bucket")
@@ -47,8 +48,8 @@ def training():
     json_data = json.dumps(outputs)
     # Initialize S3 client
     s3_client = boto3.client("s3")
-    output_bucket = os.environ.get("DATA_URI") if os.environ.get("DATA_URI") else "data-remote-repository-cefriel"
-    output_path = os.environ.get("DATA_URI") if os.environ.get("DATA_URI") else "gruppo-1/outputs/model_artifacts"+ script[:-3] +".json"
+    output_bucket = os.environ.get("OUTPUT_BUCKET") if os.environ.get("OUTPUT_BUCKET") else "data-remote-repository-cefriel"
+    output_path = os.environ.get("OUTPUT_PATH") if os.environ.get("OUTPUT_PATH") else "gruppo-1/outputs/model_artifacts_"+ script[:-3] +".json"
     s3_client.put_object(
         Bucket=output_bucket,       
         Key=output_path,      
