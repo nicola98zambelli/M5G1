@@ -12,6 +12,6 @@ Finally, here's the architecture technical overview:
 ![Architecture Overview](https://github.com/nicola98zambelli/M5G1/blob/main/doc/Arichitecture.png)
 
 
-For more detailed information, refer to the [docs folder]([./docs](https://github.com/nicola98zambelli/M5G1/blob/main/doc/)).
+For more detailed information, refer to the [docs folder](https://github.com/nicola98zambelli/M5G1/tree/main/doc).
 
 
