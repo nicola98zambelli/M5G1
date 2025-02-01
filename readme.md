@@ -9,6 +9,9 @@ All Lambda functions are containerized with their images stored in ECR, so that 
 We also implemented **GitHub Actions** to automate build and deployment of Lambda images and jobs images to ECR. Actions are triggered enytime we merge an update of the Lambda / jobs scripts from ```dev``` to the ```main``` branch.
 
 Finally, here's the architecture technical overview:
-![M5-G1-architecture-draft (1)](https://github.com/user-attachments/assets/8ac0759a-5231-4ce9-99fc-c2c29bc6fcbb)
+![Architecture Overview](https://github.com/nicola98zambelli/M5G1/blob/main/doc/Arichitecture.png)
+
+
+For more detailed information, refer to the [docs folder]([./docs](https://github.com/nicola98zambelli/M5G1/blob/main/doc/)).
 
 
