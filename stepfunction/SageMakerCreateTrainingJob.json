@@ -1,23 +1,195 @@
 {
-  "AppSpecification": {
-    "ImageUri": "314146336986.dkr.ecr.us-east-1.amazonaws.com/gruppo1:M5G1-DataProcessing"
-  },
-  "ProcessingResources": {
-    "ClusterConfig": {
-      "InstanceCount": 1,
-      "InstanceType": "ml.t3.medium",
-      "VolumeSizeInGB": 10
+  "QueryLanguage": "JSONPath",
+  "Comment": "A description of my state machine",
+  "StartAt": "Lambda Invoke M5-G1-lambda-exec-uuid",
+  "States": {
+    "Lambda Invoke M5-G1-lambda-exec-uuid": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "arn:aws:lambda:us-east-1:314146336986:function:M5-G1-lambda-exec-uuid:$LATEST"
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "ResultPath": "$.globals",
+      "Next": "SageMaker CreateProcessingJob"
+    },
+    "SageMaker CreateProcessingJob": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sagemaker:createProcessingJob.sync",
+      "Parameters": {
+        "AppSpecification": {
+          "ImageUri": "314146336986.dkr.ecr.us-east-1.amazonaws.com/gruppo1:M5G1-DataProcessing"
+        },
+        "ProcessingResources": {
+          "ClusterConfig": {
+            "InstanceCount": 1,
+            "InstanceType": "ml.t3.medium",
+            "VolumeSizeInGB": 10
+          }
+        },
+        "RoleArn": "arn:aws:iam::314146336986:role/M5-G1-role-SageMakerJobs",
+        "StoppingCondition": {
+          "MaxRuntimeInSeconds": 10800
+        },
+        "ProcessingJobName.$": "States.Format('ProcessingJob-{}', $.globals.Payload.exec_uuid)"
+      },
+      "Next": "Lambda Invoke M5-G1-lambda-exec-uuid_2",
+      "ResultPath": "$.globals"
+    },
+    "Lambda Invoke M5-G1-lambda-exec-uuid_2": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "arn:aws:lambda:us-east-1:314146336986:function:M5-G1-lambda-exec-uuid:$LATEST"
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "ResultPath": "$.globals",
+      "Next": "SageMaker CreateTrainingJob"
+    },
+    "SageMaker CreateTrainingJob": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sagemaker:createProcessingJob.sync",
+      "Parameters": {
+        "AppSpecification": {
+          "ImageUri": "314146336986.dkr.ecr.us-east-1.amazonaws.com/gruppo1:M5G1-Training"
+        },
+        "ProcessingResources": {
+          "ClusterConfig": {
+            "InstanceCount": 1,
+            "InstanceType": "ml.t3.medium",
+            "VolumeSizeInGB": 10
+          }
+        },
+        "RoleArn": "arn:aws:iam::314146336986:role/M5-G1-role-SageMakerJobs",
+        "StoppingCondition": {
+          "MaxRuntimeInSeconds": 10800
+        },
+        "ProcessingJobName.$": "States.Format('TrainingJob-{}', $.globals.Payload.exec_uuid)"
+      },
+      "ResultPath": "$.globals",
+      "Next": "Lambda Invoke M5-G1-lambda-exec-uuid_3"
+    },
+    "Lambda Invoke M5-G1-lambda-exec-uuid_3": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "arn:aws:lambda:us-east-1:314146336986:function:M5-G1-lambda-exec-uuid:$LATEST"
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "ResultPath": "$.globals",
+      "Next": "SageMaker EndPointPublisherJob"
+    },
+    "SageMaker EndPointPublisherJob": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sagemaker:createProcessingJob.sync",
+      "Parameters": {
+        "AppSpecification": {
+          "ImageUri": "314146336986.dkr.ecr.us-east-1.amazonaws.com/gruppo1:M5G1-EndPointPublisher"
+        },
+        "ProcessingResources": {
+          "ClusterConfig": {
+            "InstanceCount": 1,
+            "InstanceType": "ml.t3.medium",
+            "VolumeSizeInGB": 10
+          }
+        },
+        "RoleArn": "arn:aws:iam::314146336986:role/M5-G1-role-SageMakerJobs",
+        "StoppingCondition": {
+          "MaxRuntimeInSeconds": 10800
+        },
+        "ProcessingJobName.$": "States.Format('EndPointPublisher-{}', $.globals.Payload.exec_uuid)"
+      },
+      "ResultPath": "$.globals",
+      "Next": "Lambda Invoke M5-G1-lambda-exec-uuid_4"
+    },
+    "Lambda Invoke M5-G1-lambda-exec-uuid_4": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "arn:aws:lambda:us-east-1:314146336986:function:M5-G1-lambda-exec-uuid:$LATEST"
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "ResultPath": "$.globals",
+      "Next": "SageMaker EndPointTesterJob"
+    },
+    "SageMaker EndPointTesterJob": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sagemaker:createProcessingJob.sync",
+      "Parameters": {
+        "AppSpecification": {
+          "ImageUri": "314146336986.dkr.ecr.us-east-1.amazonaws.com/gruppo1:M5G1-EndPointTester"
+        },
+        "ProcessingResources": {
+          "ClusterConfig": {
+            "InstanceCount": 1,
+            "InstanceType": "ml.t3.medium",
+            "VolumeSizeInGB": 10
+          }
+        },
+        "RoleArn": "arn:aws:iam::314146336986:role/M5-G1-role-SageMakerJobs",
+        "StoppingCondition": {
+          "MaxRuntimeInSeconds": 10800
+        },
+        "ProcessingJobName.$": "States.Format('EndPointTester-{}', $.globals.Payload.exec_uuid)"
+      },
+      "ResultPath": "$.globals",
+      "End": true
     }
-  },
-  "RoleArn": "arn:aws:iam::314146336986:role/M5-G1-role-SageMakerJobs",
-  "StoppingCondition": {
-    "MaxRuntimeInSeconds": 10800
-  },
-  "Environment": {
-    "BUCKET": "data-remote-repository-cefriel",
-    "RAW_TRAIN_PATH": "gruppo-1/raw/train.csv",
-    "RAW_VAL_PATH": "gruppo-1/raw/validation.csv",
-    "RAW_TEST_PATH": "gruppo-1/raw/test.csv"
-  },
-  "ProcessingJobName.$": "$.exec_uuid"
+  }
 }
